@@ -1,0 +1,23 @@
+{
+  "name": "axsenwebsite",
+  "version": "2.0.0",
+  "description": "AxsenWebsite AI - Professional Web Design with 50+ AI Tools",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server",
+    "dev": "npx http-server --port 8000"
+  },
+  "keywords": [
+    "ai",
+    "web-design",
+    "web-development",
+    "responsive",
+    "modern"
+  ],
+  "author": "AxsenWebsite",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/axsenwebsite/axsenwebsite.git"
+  }
+}
