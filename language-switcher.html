@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Switcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .language-switcher {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .language-switcher button {
+            margin-left: 10px;
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-switcher">
+        <button onclick="switchLanguage('en')">English</button>
+        <button onclick="switchLanguage('es')">Español</button>
+    </div>
+
+    <h1 id="greeting">Hello</h1>
+
+    <script>
+        const greetings = {
+            en: 'Hello',
+            es: 'Hola'
+        };
+
+        function switchLanguage(lang) {
+            document.getElementById('greeting').innerText = greetings[lang];
+        }
+    </script>
+</body>
+</html>
