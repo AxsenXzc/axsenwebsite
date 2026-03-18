@@ -203,7 +203,7 @@ app.post('/api/ai/gemini', async (req, res) => {
         // Usa API key da .env
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
         
-        if (AIzaSyCsVi2kId75_2qMrbOsHCEYGBJw6Qfkntw) {
+        if (!GEMINI_API_KEY) {
             // Fallback con risposte predefinite
             const fallbackResponses = {
                 'lead': generateLeadResponse(req.body),

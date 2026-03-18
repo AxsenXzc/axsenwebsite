@@ -14,13 +14,22 @@
     
     <title>AxsenWebsite AI | Web Design con Intelligenza Artificiale</title>
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1A2B3C4D5E"></script>
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://axsenwebsite.com/">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Analytics opzionale: imposta window.AXSEN_GA_ID prima di questo script -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-1A2B3C4D5E');
+      if (window.AXSEN_GA_ID) {
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${window.AXSEN_GA_ID}`;
+        document.head.appendChild(gaScript);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){dataLayer.push(arguments);};
+        gtag('js', new Date());
+        gtag('config', window.AXSEN_GA_ID);
+      }
     </script>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-weight='bold' fill='%2300f0ff'>A</text></svg>">
@@ -328,7 +337,7 @@
                 <a href="#contact" class="nav-link">Contatti</a>
             </div>
 
-            <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="md:hidden text-2xl">
+                <button id="mobileMenuButton" aria-controls="mobileMenu" aria-expanded="false" class="md:hidden text-2xl">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -393,13 +402,13 @@
             </div>
 
             <!-- Tool Categories Filter -->
-            <div class="flex flex-wrap justify-center gap-3 mb-12">
-                <button onclick="filterTools('all')" class="px-6 py-2 rounded-full bg-cyan-500/20 border border-cyan-500 text-cyan-400 font-medium hover:bg-cyan-500/30">Tutti</button>
-                <button onclick="filterTools('planning')" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Pianificazione</button>
-                <button onclick="filterTools('design')" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Design</button>
-                <button onclick="filterTools('content')" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Contenuti</button>
-                <button onclick="filterTools('analysis')" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Analisi</button>
-                <button onclick="filterTools('optimization')" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Ottimizzazione</button>
+            <div class="flex flex-wrap justify-center gap-3 mb-12" id="toolFilters">
+                <button data-category="all" class="px-6 py-2 rounded-full bg-cyan-500/20 border border-cyan-500 text-cyan-400 font-medium hover:bg-cyan-500/30">Tutti</button>
+                <button data-category="planning" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Pianificazione</button>
+                <button data-category="design" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Design</button>
+                <button data-category="content" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Contenuti</button>
+                <button data-category="analysis" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Analisi</button>
+                <button data-category="optimization" class="px-6 py-2 rounded-full border border-gray-600 text-gray-300 hover:border-cyan-500 hover:text-cyan-400">Ottimizzazione</button>
             </div>
 
             <!-- Tools Grid -->
@@ -461,7 +470,7 @@
             </div>
 
             <div class="glass-card p-8 md:p-12">
-                <form id="contactForm" action="https://formspree.io/f/xyzabc123" method="POST" class="space-y-6">
+                <form id="contactForm" action="#" method="POST" class="space-y-6">
                     
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
@@ -732,7 +741,7 @@
     <!-- Scripts -->
     <script>
         // CONSTANTS
-        const FORMSPREE_ID = 'f/xdawewll'; // ← CAMBIA CON IL TUO ID
+        const FORMSPREE_ID = '';
         
         // AI TOOLS DATABASE
         const aiTools = [
@@ -772,6 +781,7 @@
             loadAITools();
             initializeCookies();
             setupFormHandling();
+            setupUIEvents();
         });
 
         // FUNCTIONS
@@ -783,28 +793,41 @@
                 filtered = aiTools.filter(t => t.category === category);
             }
 
-            grid.innerHTML = filtered.map(tool => `
-                <div class="ai-tool-card" onclick="openTool('${tool.id}')">
+            grid.replaceChildren();
+            filtered.forEach((tool) => {
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'ai-tool-card text-left w-full';
+                card.addEventListener('click', () => openTool(tool.id));
+
+                const statusText = tool.status === 'active' ? 'Attivo' : 'Presto';
+
+                card.innerHTML = `
                     <div class="tool-icon">
                         <i class="fas fa-wand-magic-sparkles"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">${tool.name}</h3>
-                    <p class="text-gray-400 text-sm mb-4">${tool.desc}</p>
+                    <h3 class="text-xl font-bold mb-2"></h3>
+                    <p class="text-gray-400 text-sm mb-4"></p>
                     <div class="flex justify-between items-center">
-                        <span class="text-xs text-green-400 font-medium">✅ ${tool.status === 'active' ? 'Attivo' : 'Presto'}</span>
+                        <span class="text-xs text-green-400 font-medium">✅ ${statusText}</span>
                         <i class="fas fa-arrow-right text-cyan-400"></i>
                     </div>
-                </div>
-            `).join('');
+                `;
+                card.querySelector('h3').textContent = tool.name;
+                card.querySelector('p').textContent = tool.desc;
+                grid.appendChild(card);
+            });
         }
 
-        function filterTools(category) {
+        function filterTools(category, selectedButton) {
             loadAITools(category);
-            document.querySelectorAll('[onclick*="filterTools"]').forEach(btn => {
+            document.querySelectorAll('#toolFilters button').forEach(btn => {
                 btn.classList.remove('bg-cyan-500/20', 'border-cyan-500', 'text-cyan-400');
                 btn.classList.add('border-gray-600', 'text-gray-300');
             });
-            event.target.classList.add('bg-cyan-500/20', 'border-cyan-500', 'text-cyan-400');
+            if (selectedButton) {
+                selectedButton.classList.add('bg-cyan-500/20', 'border-cyan-500', 'text-cyan-400');
+            }
         }
 
         function openTool(toolId) {
@@ -860,6 +883,10 @@
 
                 if (!document.getElementById('privacy').checked) {
                     alert('⚠️ Devi accettare privacy e termini');
+                    return;
+                }
+                if (!FORMSPREE_ID) {
+                    alert('⚠️ Configura FORMSPREE_ID nello script prima di inviare il form.');
                     return;
                 }
 
@@ -923,6 +950,22 @@
 
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setupUIEvents() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenuButton?.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const expanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                mobileMenuButton.setAttribute('aria-expanded', String(!expanded));
+            });
+
+            document.querySelectorAll('#toolFilters button').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    filterTools(btn.dataset.category, btn);
+                });
+            });
         }
 
         // Close modals on background click
