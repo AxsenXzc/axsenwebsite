@@ -196,7 +196,12 @@
             const params = getParams();
             const score = calculateScore(params);
 
-            document.getElementById('scoreValue').innerHTML = `${score}% <span class="text-sm ${score >= 75 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-orange-400'}">${score >= 75 ? '🔥 Prioritario' : score >= 50 ? '👍 Qualificato' : '⏳ Da valutare'}</span>`;
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreTag = document.createElement('span');
+            scoreTag.className = `text-sm ${score >= 75 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-orange-400'}`;
+            scoreTag.textContent = score >= 75 ? '🔥 Prioritario' : score >= 50 ? '👍 Qualificato' : '⏳ Da valutare';
+            scoreValue.textContent = `${score}% `;
+            scoreValue.appendChild(scoreTag);
             document.getElementById('nameValue').textContent = params.name || '-';
             document.getElementById('emailValue').textContent = params.email || '-';
             document.getElementById('companyValue').textContent = params.company || '-';
