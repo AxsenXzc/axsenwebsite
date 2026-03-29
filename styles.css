@@ -1,0 +1,62 @@
+/**
+ * styles.css
+ * 
+ * This CSS file includes styles for animations, responsive design,
+ * accessibility features, and modern design patterns.
+ */
+
+/* Base Styles */
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #007BFF;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 601px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+/* Animations */
+a {
+    transition: color 0.3s ease;
+}
+a:hover {
+    color: #0056b3;
+}
+
+/* Accessibility Features */
+a {
+    text-decoration: none;
+}
+a:focus {
+    outline: 2px dashed #FF5733;
+}
+
+/* Modern Design Patterns */
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
