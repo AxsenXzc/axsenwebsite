@@ -1,22 +1,42 @@
 [build]
-  command = ""
-  functions = ""
+  command = "echo 'Static site - no build needed'"
   publish = "."
 
+# Redirect all non-file requests to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# Headers for security and performance
 [[headers]]
   for = "/*"
   [headers.values]
-    Cache-Control = "public, max-age=3600, must-revalidate"
-    X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Cache-Control = "public, max-age=3600, must-revalidate"
 
+# Cache policy for HTML
 [[headers]]
-  for = "/index.html"
+  for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Cache policy for service worker
+[[headers]]
+  for = "/service-worker.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Environment variables
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "development"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
