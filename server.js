@@ -22,6 +22,9 @@ const path = require('path');
 dotenv.config();
 
 const app = express();
+
+// Serve static files
+app.use(express.static(path.join(__dirname, '.')));
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: {
@@ -150,12 +153,11 @@ const visitorSchema = new mongoose.Schema({
 
 // Creazione modelli (solo se MongoDB connesso)
 let Lead, Chat, User, Visitor;
-if (isMongoConnected) {
-    Lead = mongoose.model('Lead', leadSchema);
-    Chat = mongoose.model('Chat', chatSchema);
-    User = mongoose.model('User', userSchema);
-    Visitor = mongoose.model('Visitor', visitorSchema);
-}
+// Creazione modelli (sempre, mongoose gestisce la coda dei comandi se non ancora connesso)
+Lead = mongoose.model('Lead', leadSchema);
+Chat = mongoose.model('Chat', chatSchema);
+User = mongoose.model('User', userSchema);
+Visitor = mongoose.model('Visitor', visitorSchema);
 
 // ============================================
 // SERVIZIO EMAIL MIGLIORATO
@@ -203,7 +205,7 @@ app.post('/api/ai/gemini', async (req, res) => {
         // Usa API key da .env
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
         
-        if (AIzaSyCsVi2kId75_2qMrbOsHCEYGBJw6Qfkntw) {
+        if (!GEMINI_API_KEY) {
             // Fallback con risposte predefinite
             const fallbackResponses = {
                 'lead': generateLeadResponse(req.body),
